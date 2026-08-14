@@ -167,10 +167,8 @@ No external attribution libraries. All five models are implemented from first pr
 
 **Patience Anono** — Data Analyst & Marketing Analytics Specialist
 
-📧 anonopatiene@gmail.com  
+📧 anonopatience@gmail.com  
 🌐 [padataanalytics.com](https://padataanalytics.com)  
 💼 [LinkedIn](https://www.linkedin.com/in/patience-anono-22ab06176/)
 
 ---
-
-*Dataset is synthetic, built to mirror real e-commerce attribution data structures. All analysis methodology and business logic is real and production-applicable.*
