@@ -6,7 +6,7 @@ It matters. A lot. This notebook quantifies exactly how much.
 
 ---
 
-## The problem in one paragraph
+## The problem
 
 Most businesses run their marketing budget decisions off Last Click attribution — the default in Google Ads, Facebook Ads Manager, and most analytics platforms. Last Click gives 100% of the conversion credit to whatever channel the customer touched right before buying. Which sounds reasonable until you notice that Paid Search almost always appears at the end of a journey (customers search when they're ready to buy) while Paid Social and Influencer almost always appear at the beginning (they start the journey). Under Last Click, Paid Search looks exceptional and everything that started the journey looks weak. The budget follows the story the data is telling. And the story is wrong.
 
