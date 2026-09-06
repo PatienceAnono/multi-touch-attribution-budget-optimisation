@@ -138,7 +138,7 @@ Deduplication changed **zero dollars** of true conversion revenue — exactly as
 
 ---
 
-## Still outstanding (non-blocking, unchanged from v1)
+## Still outstanding (non-blocking, unchanged)
 
 - `campaign_name` blanks (208 rows) use `"(No Campaign)"` in this file; the project's own notebook uses `"Unknown / Direct"`. Your call whether to reconcile.
 - `device_type` (169 rows) and `touchpoint_hour` (46 rows) missingness — confirmed non-blocking for attribution, left unfilled.
