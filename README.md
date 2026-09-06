@@ -835,50 +835,6 @@ It is to help stakeholders understand:
 
 ---
 
-# 📌 Portfolio Positioning
-
-### Project
-
-**Multi-Touch Attribution & Marketing Budget Optimisation**
-
-### Role
-
-**Marketing Data Analyst / Marketing Analytics Consultant**
-
-### Objective
-
-Build an auditable analytics solution that connects customer marketing journeys to channel attribution and marketing investment analysis.
-
-### What This Project Demonstrates
-
-This project demonstrates the ability to move beyond simply creating charts.
-
-It shows the ability to:
-
-```text
-Understand the business problem
-        ↓
-Audit the raw data
-        ↓
-Clean and validate the data
-        ↓
-Build analytical models
-        ↓
-Validate the calculations
-        ↓
-Build a semantic model
-        ↓
-Create DAX measures
-        ↓
-Design stakeholder dashboards
-        ↓
-Communicate business implications
-```
-
-This makes the project representative of a real-world **Marketing Analytics / Business Intelligence workflow**.
-
----
-
 # 🚀 Potential Future Enhancements
 
 Possible future extensions include:
@@ -922,15 +878,6 @@ https://padataanalytics.com
 **GitHub:**  
 https://github.com/PatienceAnono
 
----
-
-# 📎 Repository
-
-**GitHub Repository:**
-
-https://github.com/PatienceAnono/multi-touch-attribution-budget-optimisation
-
----
 
 # 📄 Disclaimer
 
