@@ -569,31 +569,6 @@ Visual QA checked:
 
 ---
 
-# 🎨 PA Data Analytics Design System
-
-The dashboard follows the PA Data Analytics visual identity.
-
-| Design Element | Value |
-|---|---|
-| PA Navy | `#272D78` |
-| PA Blue | `#3386C7` |
-| White | `#FFFFFF` |
-| Light Background | `#F8F9FC` |
-| Dark Text | `#555770` |
-| Optional Teal | `#2EC4B6` |
-
-The visual system uses:
-
-- PA Navy for titles and structural elements
-- PA Blue for primary analytical highlights
-- White for clean card surfaces
-- Light Background for the report canvas
-- Dark Text for readable supporting information
-
-Red/green performance semantics were intentionally avoided because the dataset does not provide validated performance targets or benchmarks.
-
----
-
 # 🎛️ Dashboard Interactivity
 
 The Power BI report includes:
