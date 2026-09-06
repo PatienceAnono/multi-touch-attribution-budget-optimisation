@@ -1,174 +1,467 @@
-# Multi-Touch Attribution Model Comparison & Budget Optimisation
+# Multi-Touch Attribution & Marketing Budget Optimisation
 
-This project answers what I think is the most underrated question in marketing analytics: when a customer interacts with five different channels before buying, who gets the credit — and does it actually matter which answer you choose?
+> **An end-to-end marketing analytics project combining Python, attribution modeling, and Power BI to understand customer journeys, channel contribution, and marketing investment efficiency.**
 
-It matters. A lot. This notebook quantifies exactly how much.
-
----
-
-## The problem
-
-Most businesses run their marketing budget decisions off Last Click attribution — the default in Google Ads, Facebook Ads Manager, and most analytics platforms. Last Click gives 100% of the conversion credit to whatever channel the customer touched right before buying. Which sounds reasonable until you notice that Paid Search almost always appears at the end of a journey (customers search when they're ready to buy) while Paid Social and Influencer almost always appear at the beginning (they start the journey). Under Last Click, Paid Search looks exceptional and everything that started the journey looks weak. The budget follows the story the data is telling. And the story is wrong.
-
-In this dataset, the marketing team was spending $6,487 per week on Influencer — 32.9% of the total paid budget — while spending $265 per week on Email. Last Click ROAS for Influencer: 2.7x. Last Click ROAS for Email: 163x. That inversion should have been a red flag years before this analysis.
+**Built by PA Data Analytics**
 
 ---
 
-## What this project builds
+## 📊 Project Overview
 
-Five attribution models, built from scratch on the same customer journey dataset, compared side by side with their implied budget allocations and the projected dollar impact of choosing between them.
+Marketing teams often struggle to answer a simple but important question:
 
-| Model | The rule | The bias |
-|---|---|---|
-| Last Click | 100% to the final touchpoint | Overvalues Paid Search and Direct |
-| First Click | 100% to the first touchpoint | Overvalues Paid Social and Influencer |
-| Linear | Equal split across all touchpoints | Treats a bounce and a 10-minute session the same |
-| Time Decay | Exponential weight toward purchase date | Undervalues brand-building activity |
-| Shapley (Data-Driven) | Average marginal contribution via game theory | Computationally intensive; the gold standard |
+> **Which marketing channels are actually contributing to conversions, and how should marketing investment be evaluated across the customer journey?**
 
----
+A customer may interact with several channels before converting. Depending on how revenue is assigned, the same customer journey can tell very different stories.
 
-## Results
+This project builds a complete **multi-touch attribution and marketing performance analytics pipeline**, starting with raw customer-journey data and ending with an interactive, stakeholder-ready Power BI dashboard.
 
-**Dataset:** 11,292 touchpoints · 3,500 customers · 7 channels · Full year 2024
+The project demonstrates the complete workflow:
 
-**Conversion rate:** 41.5% (1,454 converting journeys out of 3,495)
-
-**84% of journeys are multi-touch** — meaning the question of who gets the credit is not academic. It affects the majority of revenue.
-
-**How Last Click distorts channel credit:**
-
-| Channel | Last Click | Shapley | Difference |
-|---|---|---|---|
-| Paid Search | 35.6% | 41.9% | Underfunded despite being strong |
-| Paid Social | 15.0% | 6.2% | Overfunded — contribution lower than clicks suggest |
-| Influencer | 7.6% | 0.0% | Massively overfunded at 32.9% of budget |
-| Email | 18.9% | 0.0% | High Last Click ROAS driven by selection bias, not causation |
-
-**Dollar impact:**
-
-```
-Shapley-optimised budget  →  $203,603 projected revenue per campaign  (MROI: 10.3x)
-Last Click budget         →  $110,587 projected revenue per campaign  (MROI: 5.6x)
-Weekly gap                →  $93,016
-Annualised gap            →  $4,836,832
-```
-
-To be clear about what that $4.8M figure means: it is the projected revenue difference between running the budget according to Last Click's recommendations versus Shapley's recommendations, using Shapley ROAS as the ground truth for true channel performance. It assumes 52 campaign cycles per year at the current spend level. It also assumes channel ROAS stays constant as spend changes — which it won't. The number is directional, not a guarantee. The point is that model choice has a real financial consequence, not just a methodological one.
+**Raw Data → Data Cleaning → Data Validation → Attribution Modeling → Reconciliation → Power BI Modeling → DAX → Stakeholder Dashboard**
 
 ---
 
-## The Shapley model — why it's the right one
+# 🎯 Business Objectives
 
-Shapley values come from cooperative game theory. Lloyd Shapley won the Nobel Prize for this work in 2012. The idea: each channel's credit equals its average marginal contribution to conversion probability across every possible combination of channels it could appear in.
+The project was designed to answer five core business questions:
 
-In practice this means: if adding Email to a journey that already has Paid Search and Paid Social consistently improves conversion probability — across many different such journeys — Email gets meaningful credit. If adding Email rarely changes conversion probability (maybe because high-intent customers are already on the email list regardless of whether they would have converted), Email gets low credit.
-
-This is why Email scores zero in this dataset. It correlates strongly with conversion (163x Last Click ROAS) but does not independently cause it. Shapley separates correlation from causation in a way that Last Click simply cannot.
-
-Google Analytics 4's "Data-Driven Attribution" is Shapley. Meta's Robyn marketing mix modelling framework is built on similar principles. This is where the industry has been moving for the last several years, even if most businesses are still making budget decisions off Last Click exports from their ad platforms.
-
----
-
-## Data quality
-
-The raw dataset had five issues. Two worth explaining:
-
-**Tracking pixel double-fires (198 rows):** The `is_duplicate_flag` column was generated by the tracking system and identified 198 rows where the same session triggered the pixel twice within milliseconds. These are not full-row duplicates — they have unique `touchpoint_id` values — but they share a `session_id` and represent the same user action being recorded twice. Removing them before attribution prevents double-counting channel touchpoints.
-
-**Category typos (18 rows):** `channel_category` had values like `'PAID'`, `'Earnd'`, `'ownd'`, `'Payd'`. Rather than pattern-matching against the typos (which breaks on any new variant), these were re-derived from the `channel` column using a clean lookup. The result is consistent regardless of what the original entry said.
-
-The 58.4% missingness in `conversion_date` and `days_to_conversion` is structural, not a data quality problem. Non-converting journeys have no conversion date by definition. The identical missing percentage across both columns confirms they are the same population.
+1. **How much conversion revenue is attributed to each marketing channel?**
+2. **How does channel contribution change across attribution models?**
+3. **Which channels and campaigns appear efficient relative to marketing spend?**
+4. **What does the customer journey look like before conversion?**
+5. **How should attribution insights be interpreted when making marketing investment decisions?**
 
 ---
 
-## Notebook structure
+# 📁 Dataset
 
-The notebook runs in 16 sections:
+The project uses customer-level marketing journey data containing multiple touchpoints leading to conversion or non-conversion.
 
-| Sections | Content |
-|---|---|
-| 1–3 | Executive summary, business problem, setup |
-| 4–5 | Data loading, quality assessment, cleaning pipeline |
-| 5B | Customer journey analysis — path lengths, first/last touch by channel |
-| 6–10 | The five attribution models built with documented functions |
-| 11 | Side-by-side model comparison — revenue share table and heatmap |
-| 12 | Budget reallocation under each model |
-| 13 | Dollar impact analysis — projected revenue, weekly and annual gaps |
-| 14 | Executive dashboard |
-| 15 | Strategic recommendations and implementation roadmap |
-| 16 | Export — clean CSV, all model results, Power BI dataset |
+### Validated Dataset
 
----
+| Metric | Value |
+|---|---:|
+| Total Journeys | **3,500** |
+| Converted Journeys | **1,454** |
+| Touchpoints | **11,193** |
+| Marketing Channels | **7** |
+| Campaigns | **32** |
+| Customer Segments | **5** |
+| Regions | **5** |
+| Conversion Revenue | **$229,294.41** |
+| Marketing Spend | **$19,901.84** |
+| Conversion Rate | **41.5%** |
 
-## Project structure
+The cleaned journey dataset retains both converted and non-converted journeys.
 
-```
-multi-touch-attribution-budget-optimisation/
-│
-├── Attribution_Model_Comparison.ipynb     ← Main notebook (16 sections)
-│
-├── data/
-│   ├── raw/
-│   │   └── attribution_customer_journeys.csv   ← Raw dataset (11,292 rows)
-│   └── processed/
-│       ├── attribution_clean.csv               ← After quality treatment
-│       ├── attribution_results_all_models.csv  ← Revenue + ROAS, all 5 models
-│       ├── budget_reallocation.csv             ← Current vs recommended spend
-│       ├── attribution_powerbi.csv             ← Journey-level, Power BI ready
-│       └── dollar_impact_summary.csv           ← Weekly + annual projections
-│
-├── visuals/
-│   ├── 1_journey_analysis.png                 ← Path length, first/last touch
-│   ├── 2_model_comparison.png                 ← Side-by-side + heatmap + rank
-│   ├── 3_budget_reallocation.png              ← Stacked budget bars + change heatmap
-│   ├── 4_dollar_impact.png                    ← Projected revenue + annual gaps
-│   └── 5_executive_dashboard.png             ← One-page summary
-│
-├── Attribution_Model_Stakeholder_Report.docx  ← Full stakeholder write-up
-│
-└── README.md
-```
+The attribution output is restricted to converted journeys because revenue attribution requires a conversion outcome.
 
 ---
 
-## How to run it
+# 🧹 Data Cleaning & Quality Assurance
 
-```bash
-git clone https://github.com/anonopatience/multi-touch-attribution.git
-cd multi-touch-attribution
+Before building the attribution models, the raw dataset was systematically audited.
 
-pip install pandas numpy matplotlib seaborn
-jupyter notebook Attribution_Model_Comparison.ipynb
-```
+## Duplicate Investigation
 
-Run Kernel → Restart & Run All. All output directories are created automatically. The Shapley computation takes roughly 30–60 seconds depending on your machine — it is doing combinatorial maths across seven channels for every customer journey.
+The raw data contained:
 
-**Requirements:**
-```
-pandas, numpy, matplotlib, seaborn, itertools (built-in), math (built-in)
-```
+- **99 duplicate journey-position groups**
+- **198 duplicate rows**
+- Every duplicate group contained exactly two records
+- Both records were substantively identical
+- Differences were limited to tracking-level fields such as `touchpoint_id`
+- Both records were flagged as duplicates
+- No conflicting duplicate groups were found
 
-No external attribution libraries. All five models are implemented from first principles so the code is readable and auditable.
+### Canonical Deduplication Rule
+
+Because every duplicate pair represented the same substantive touchpoint, the cleaning pipeline retained:
+
+> **The lowest `touchpoint_id` as the deterministic canonical record.**
+
+This removed **99 duplicate rows**, rather than incorrectly removing both records from each group.
+
+### Validation Results
+
+| Check | Result |
+|---|---:|
+| Journeys preserved | **3,500 / 3,500** |
+| Complete touchpoint sequences | **100%** |
+| Converted journeys protected | **1,454 / 1,454** |
+| Revenue before cleaning | **$229,294.41** |
+| Revenue after cleaning | **$229,294.41** |
+| Revenue difference | **$0.00** |
+
+The cleaning process therefore preserved the commercial integrity of the dataset.
+
+---
+
+# 🏷️ Channel Classification
+
+Channel categories were re-derived using the project's established channel-to-category mapping.
+
+The analysis classified:
+
+- Paid Search → Paid
+- Paid Social → Paid
+- Display → Paid
+- Influencer → Paid
+- Email → Owned
+- SEO/Organic → Earned
+- Direct → Earned
+
+This process corrected **18 inconsistent channel-category records**.
 
 ---
 
-## A few honest caveats
+# 📈 Attribution Modeling
 
-**The Shapley model in this notebook is data-driven but simplified.** It uses actual journey channel combinations from the dataset to estimate coalition values — which is more defensible than theoretical assumptions — but a production Shapley implementation would use larger holdout experiments and more sophisticated statistical approaches to estimate marginal contribution.
+Five attribution models were implemented from scratch at the touchpoint level.
 
-**The $4.8M annual figure should be treated carefully.** It assumes ROAS stays constant as spend changes, which it will not. Every channel has a saturation curve. The figure is meaningful as a directional estimate of the opportunity from better attribution. It is not a guaranteed outcome from implementing the recommended budgets.
+The models were applied to the **1,454 converted journeys**.
 
-**Email's zero Shapley credit does not mean Email does not work.** It means Email does not independently cause conversion in this dataset — likely because the customers on the email list are already high-intent. Email is still the right tool for customer retention and re-engagement. It just should not be measured or budgeted as a customer acquisition channel.
+## 1. First-Touch Attribution
+
+100% of conversion credit is assigned to the first touchpoint.
+
+### Business interpretation
+
+Useful for understanding:
+
+- Customer acquisition
+- Discovery
+- Top-of-funnel channels
 
 ---
 
-## About
+## 2. Last-Touch Attribution
 
-**Patience Anono** — Data Analyst & Marketing Analytics Specialist
+100% of conversion credit is assigned to the final touchpoint before conversion.
 
-📧 anonopatience@gmail.com  
-🌐 [padataanalytics.com](https://padataanalytics.com)  
-💼 [LinkedIn](https://www.linkedin.com/in/patience-anono-22ab06176/)
+### Business interpretation
+
+Useful for understanding:
+
+- Closing interactions
+- Lower-funnel channels
+- Conversion-stage activity
+
+However, Last Touch can over-credit channels that appear immediately before purchase.
 
 ---
+
+## 3. Linear Attribution
+
+Conversion revenue is distributed equally across all touchpoints in a journey.
+
+### Business interpretation
+
+Provides a neutral multi-touch baseline where every touch receives equal credit.
+
+---
+
+## 4. Time-Decay Attribution
+
+More recent interactions receive greater attribution weight.
+
+The project uses a:
+
+### **3-day half-life**
+
+This was derived from the dataset's observed median conversion window of approximately six days.
+
+The parameter is therefore explicitly documented as an analytical assumption rather than a fitted causal parameter.
+
+---
+
+## 5. Position-Based Attribution
+
+The model uses a:
+
+- **40%** first-touch allocation
+- **20%** middle-touch allocation
+- **40%** last-touch allocation
+
+Special handling was applied for shorter journeys:
+
+- 1 touchpoint → **100%**
+- 2 touchpoints → **50% / 50%**
+
+This avoids artificially assigning middle-touch credit where no middle touch exists.
+
+---
+
+# ✅ Attribution Reconciliation
+
+All five attribution models successfully reconcile to the source conversion revenue.
+
+| Attribution Model | Total Attributed Revenue |
+|---|---:|
+| First Touch | **$229,294.41** |
+| Last Touch | **$229,294.41** |
+| Linear | **$229,294.41** |
+| Time Decay | **$229,294.41** |
+| Position Based | **$229,294.41** |
+
+### Validation
+
+**1,454 / 1,454 converted journeys passed validation for every model.**
+
+All models passed:
+
+- Weight sum = 1
+- Attribution revenue = journey revenue
+- No negative weights
+- No over-attribution
+- No post-conversion touchpoints
+- No duplicate attribution records
+
+This produced:
+
+> **$0.00 reconciliation difference across all five models.**
+
+---
+
+# 🔍 Key Attribution Findings
+
+The most important finding is that **channel performance changes substantially depending on the attribution methodology used.**
+
+| Channel | First Touch | Last Touch | Interpretation |
+|---|---:|---:|---|
+| Paid Search | 14.2% | **35.4%** | Strong closing role |
+| Paid Social | **27.8%** | 14.7% | Stronger discovery role |
+| Influencer | **19.2%** | 7.7% | Stronger top-of-funnel role |
+| Email | 9.1% | **19.1%** | Stronger nurture/closing role |
+
+### Business Interpretation
+
+**Paid Search**
+
+Paid Search increases significantly under Last Touch, suggesting that it frequently appears close to conversion.
+
+**Paid Social**
+
+Paid Social receives substantially more credit under First Touch than Last Touch, suggesting a stronger role earlier in the customer journey.
+
+**Influencer**
+
+Influencer shows a similar pattern, receiving considerably more credit under First Touch.
+
+**Email**
+
+Email gains attribution share toward Last Touch, suggesting an important nurture and closing role.
+
+### Main insight
+
+> **There is no single attribution view that tells the complete marketing story.**
+
+The model comparison is therefore more valuable than simply selecting one "winning" attribution model.
+
+---
+
+# 🚦 Direct Traffic Analysis
+
+Direct traffic was investigated before being included in the analysis.
+
+Its journey-position distribution was:
+
+| Position | Share |
+|---|---:|
+| First Touch | **27.6%** |
+| Middle Touch | **37.3%** |
+| Last Touch | **39.2%** |
+
+Because Direct was not overwhelmingly concentrated in one position, it was retained as a genuine channel.
+
+A separate Direct-excluded perspective was also produced for comparison.
+
+Importantly, fully Direct journeys were excluded rather than artificially transferring their revenue to another channel.
+
+---
+
+# 💰 Marketing Investment
+
+Validated marketing spend:
+
+| Channel | Marketing Spend |
+|---|---:|
+| Paid Search | **$8,528.47** |
+| Influencer | **$6,549.29** |
+| Paid Social | **$4,188.60** |
+| Display | **$367.82** |
+| Email | **$267.66** |
+| Direct / SEO | **$0.00** |
+| **Total** | **$19,901.84** |
+
+Where a channel has zero recorded spend, ROAS is intentionally returned as blank rather than creating a misleading efficiency metric.
+
+---
+
+# 📊 Power BI Dashboard
+
+The final analytical outputs were developed into a stakeholder-facing **five-page Power BI dashboard**.
+
+---
+
+## 1️⃣ Executive Overview
+
+### Purpose
+
+Provide leadership with a quick overview of marketing performance.
+
+### Includes
+
+- Total Conversion Revenue
+- Total Marketing Spend
+- ROAS
+- Conversion Rate
+- Converted Journeys
+- Distinct Customers
+- Monthly attributed revenue and marketing spend
+- Channel attributed revenue ranking
+- Executive interpretation
+
+### Business Question
+
+> **How is marketing performing overall, and where is attributed value concentrated?**
+
+---
+
+# 2️⃣ Attribution Analysis
+
+### Purpose
+
+This is the primary analytical page.
+
+### Includes
+
+- First Touch vs Last Touch comparison
+- First Touch revenue
+- Last Touch revenue
+- Linear revenue
+- Time Decay revenue
+- Position Based revenue
+- Channel attribution matrix
+- Absolute attributed revenue comparison
+- Interpretation callouts
+
+### Business Question
+
+> **How does the channel story change depending on the attribution methodology?**
+
+---
+
+# 3️⃣ Channel & Campaign Performance
+
+### Purpose
+
+Evaluate marketing efficiency across channels and campaigns.
+
+### Includes
+
+- Marketing Spend vs Attributed Revenue
+- Channel ROAS
+- Campaign ranking
+- Efficiency matrix
+- Cost per conversion
+- Channel filter
+- Campaign filter
+
+### Business Question
+
+> **Which channels and campaigns appear most efficient relative to marketing spend?**
+
+---
+
+# 4️⃣ Customer Journey
+
+### Purpose
+
+Understand how customers move through the marketing journey before converting.
+
+### Includes
+
+- Touchpoints per journey
+- Days to conversion
+- First-touch vs last-touch channel comparison
+- Average touchpoints per journey
+- Average days to conversion
+- Revenue per converted customer
+- Customer segment filtering
+- Regional filtering
+
+### Business Question
+
+> **What does the customer journey look like before conversion?**
+
+---
+
+# 5️⃣ Marketing Investment
+
+### Purpose
+
+Connect marketing investment with attributed value.
+
+### Includes
+
+- Marketing Spend vs Attributed Revenue
+- ROAS across attribution models
+- Cost per conversion
+- Channel efficiency
+- Investment interpretation
+
+### Business Question
+
+> **Where is marketing investment producing attributed value, and how sensitive is the conclusion to the attribution model?**
+
+---
+
+# 🏗️ Power BI Architecture
+
+The project deliberately separates analytical computation from reporting.
+
+### Python
+
+Used for:
+
+- Data cleaning
+- Duplicate investigation
+- Journey validation
+- Attribution calculations
+- Revenue reconciliation
+- Cost and ROI analysis
+
+### Power BI
+
+Used for:
+
+- Semantic modeling
+- Date dimension
+- Channel dimension
+- DAX measures
+- Interactive filtering
+- Visualization
+- Executive reporting
+
+The five attribution models are calculated in Python and then consumed by Power BI.
+
+This creates an auditable analytical pipeline:
+
+```text
+RAW DATA
+   ↓
+DATA CLEANING
+   ↓
+DATA VALIDATION
+   ↓
+ATTRIBUTION MODELING
+   ↓
+RECONCILIATION
+   ↓
+POWER BI DATA MODEL
+   ↓
+DAX
+   ↓
+STAKEHOLDER DASHBOARD
