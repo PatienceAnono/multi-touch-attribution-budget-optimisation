@@ -1,0 +1,6 @@
+model,journeys_weight_pass,journeys_weight_fail,max_weight_diff,journeys_revenue_pass,journeys_revenue_fail,max_revenue_diff,total_revenue_diff
+first_touch,1454,0,0.0,1454,0,0.0,0.0
+last_touch,1454,0,0.0,1454,0,0.0,0.0
+linear,1454,0,0.0,1454,0,5.684341886080802e-14,5.044853423896711e-12
+time_decay,1454,0,2.220446049250313e-16,1454,0,5.684341886080802e-14,8.526512829121202e-12
+position_based,1454,0,0.0,1454,0,5.684341886080802e-14,7.794653811288299e-12
