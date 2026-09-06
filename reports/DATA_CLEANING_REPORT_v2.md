@@ -7,13 +7,6 @@ Duplicate audit: `data/processed/duplicate_audit_v2.csv`
 
 ---
 
-## What changed from v1
-
-v1 removed every row where `is_duplicate_flag = 1` (198 rows). Validation showed this was wrong for 94 journeys: both copies of a duplicated touchpoint were flagged, so the filter deleted the touchpoint *position* entirely rather than de-duplicating it — including, in 10 cases, the actual converting/last touchpoint.
-
-v2 instead resolves duplicates at **`journey_id` + `touchpoint_position`** grain: for every position with more than one record, exactly one canonical record is retained. Nothing is deleted based on the flag alone.
-
----
 
 ## Duplicate Investigation — what the data actually showed
 
