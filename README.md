@@ -6,6 +6,17 @@
 
 ---
 
+## 🧪 Attribution Model Comparison Notebook (v2)
+
+The Python notebook [`notebook/Attribution_Model_Comparison.ipynb`](notebook/Attribution_Model_Comparison.ipynb) compares six attribution models (Last Click, First Click, Linear, Time Decay, Shapley and Markov Chain) on the same validated dataset and turns them into budget recommendations. Full write-up: [`notebook/README.md`](notebook/README.md) · stakeholder report: [`reports/Attribution_Model_Stakeholder_Report.docx`](reports/Attribution_Model_Stakeholder_Report.docx) · change log: [`CHANGELOG.md`](CHANGELOG.md).
+
+- Shapley and Markov Chain agree within 1 percentage point on every channel. Last Click gives Paid Search 35% of credit vs about 23% data-driven.
+- Influencer receives 33% of paid spend but about 13% of credit.
+- A cautious first reallocation (20% of the way to the data-driven budget) is worth about **+$2K to +$16K** paid revenue a year (scenario range across 6 models and 3 diminishing-returns settings).
+- An earlier version of the notebook reported "$4.8M per year"; that figure was wrong and has been withdrawn (see the change log).
+
+---
+
 ## 📊 Project Overview
 
 Marketing teams often struggle to answer:

@@ -1,0 +1,12 @@
+# Core analysis
+pandas>=1.4
+numpy>=1.21
+matplotlib>=3.5
+seaborn>=0.11
+
+# Running the notebook
+jupyter
+ipykernel
+
+# Tested end to end on Python 3.13 with pandas 3.1.1, numpy 2.5.5,
+# matplotlib 3.11.2, seaborn 0.13.2. Originally developed on Python 3.9 (Anaconda).
