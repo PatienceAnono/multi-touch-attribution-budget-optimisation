@@ -1,0 +1,75 @@
+table Date
+	lineageTag: 5a35f897-292d-43c9-8691-bbb3f9998548
+	dataCategory: Time
+
+	column Date
+		isUnique
+		formatString: Long Date
+		lineageTag: 31b24238-948a-476c-b068-25784383b726
+		isNameInferred
+		sourceColumn: [Date]
+
+	column Year
+		lineageTag: 66ddf4a5-4768-4ee6-94e3-378bec2a2011
+		isNameInferred
+		sourceColumn: [Year]
+
+	column MonthNumber
+		lineageTag: 38af9d39-8da0-4f80-b4d3-337bcc485855
+		isNameInferred
+		sourceColumn: [MonthNumber]
+
+	column MonthName
+		lineageTag: db68092a-42dc-4876-a70d-cf5856379fca
+		isNameInferred
+		sourceColumn: [MonthName]
+		sortByColumn: MonthNumber
+
+	column YearMonth
+		lineageTag: cb93d20c-5f44-4e7f-a82c-0b793ddcc4c2
+		isNameInferred
+		sourceColumn: [YearMonth]
+
+	column Quarter
+		lineageTag: 303d1a12-dd2c-4e12-9373-2d675077d8d0
+		isNameInferred
+		sourceColumn: [Quarter]
+
+	column WeekNumber
+		lineageTag: 188f3383-f3c4-4516-8c9f-cd674303f300
+		isNameInferred
+		sourceColumn: [WeekNumber]
+
+	column DayName
+		lineageTag: ed7e1a73-069f-4717-9561-4a7e2aa30132
+		isNameInferred
+		sourceColumn: [DayName]
+		sortByColumn: DayOfWeekNumber
+
+	column DayOfWeekNumber
+		isHidden
+		lineageTag: 005a1bdb-cbdb-467e-afe5-7fa8f3dedce2
+		isNameInferred
+		sourceColumn: [DayOfWeekNumber]
+
+	column IsWeekend
+		lineageTag: 8b4b8396-9f53-40e3-959e-a9416b02f625
+		isNameInferred
+		sourceColumn: [IsWeekend]
+
+	partition Date = calculated
+		mode: import
+		source =
+				ADDCOLUMNS(
+				    CALENDAR(DATE(2024,1,1), DATE(2024,12,31)),
+				    "Year", YEAR([Date]),
+				    "MonthNumber", MONTH([Date]),
+				    "MonthName", FORMAT([Date], "MMMM"),
+				    "YearMonth", FORMAT([Date], "YYYY-MM"),
+				    "Quarter", "Q" & FORMAT([Date], "Q"),
+				    "WeekNumber", WEEKNUM([Date]),
+				    "DayName", FORMAT([Date], "dddd"),
+				    "DayOfWeekNumber", WEEKDAY([Date], 2),
+				    "IsWeekend", IF(WEEKDAY([Date], 2) >= 6, TRUE, FALSE)
+				)
+

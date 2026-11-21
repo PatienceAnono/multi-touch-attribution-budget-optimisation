@@ -1,0 +1,410 @@
+table attribution_customer_journeys
+	lineageTag: 03de9ea3-3104-4085-bac3-4ffe18b70af9
+
+	measure 'Total Journeys' = DISTINCTCOUNT(attribution_customer_journeys[journey_id])
+		formatString: #,0
+		displayFolder: Core Business
+		lineageTag: c0b83de0-53a7-48c9-bc7d-8855f08f727c
+
+	measure 'Converted Journeys' = CALCULATE(DISTINCTCOUNT(attribution_customer_journeys[journey_id]), attribution_customer_journeys[journey_converted] = 1)
+		formatString: #,0
+		displayFolder: Core Business
+		lineageTag: a172fb1f-c5f2-4bcf-a769-a5e726c59077
+
+	measure 'Conversion Rate' = DIVIDE([Converted Journeys], [Total Journeys])
+		formatString: 0.0%
+		displayFolder: Core Business
+		lineageTag: 83e31419-5642-4589-a47e-a065fcc7c3ad
+
+	measure 'Total Touchpoints' = COUNTROWS(attribution_customer_journeys)
+		formatString: #,0
+		displayFolder: Core Business
+		lineageTag: 3445c759-0595-48bf-a023-fcd2175ddf7f
+
+	measure 'Avg Touchpoints per Journey' = DIVIDE([Total Touchpoints], [Total Journeys])
+		formatString: 0.00
+		displayFolder: Core Business
+		lineageTag: c51c8ea2-d126-43dc-9464-0c79d9e6a06f
+
+	measure 'Total Marketing Spend' = SUM(attribution_customer_journeys[touchpoint_cost_usd])
+		formatString: \$#,0.00
+		displayFolder: Core Business
+		lineageTag: 17951e19-809c-40e4-93d6-51d4e86b903e
+
+	measure 'Campaign Count' = DISTINCTCOUNT(attribution_customer_journeys[campaign_name])
+		formatString: #,0
+		displayFolder: Campaign Performance
+		lineageTag: f5d97f0d-9124-45cc-b11d-7cda5919cd59
+
+	measure 'Journeys with No Campaign' = CALCULATE(DISTINCTCOUNT(attribution_customer_journeys[journey_id]), attribution_customer_journeys[campaign_name] = "(No Campaign)")
+		formatString: #,0
+		displayFolder: Campaign Performance
+		lineageTag: 71e14856-f58d-4b25-8475-2dc3046c12b8
+
+	measure 'Distinct Customers' = DISTINCTCOUNT(attribution_customer_journeys[customer_id])
+		formatString: #,0
+		displayFolder: Customer Analysis
+		lineageTag: bafcab07-eb2c-4283-bf48-075728dd5545
+
+	measure 'Converted Customers' = CALCULATE(DISTINCTCOUNT(attribution_customer_journeys[customer_id]), attribution_customer_journeys[journey_converted] = 1)
+		formatString: #,0
+		displayFolder: Customer Analysis
+		lineageTag: 405373dc-7fb0-4c2d-8c58-5cde1039cb0b
+
+	measure 'Avg Journeys per Customer' = DIVIDE([Total Journeys], [Distinct Customers])
+		formatString: 0.00
+		displayFolder: Customer Analysis
+		lineageTag: e81bfb82-08a8-4757-a4de-6b654ba379ae
+
+	measure 'Revenue per Converted Customer (Linear)' = DIVIDE([Linear Revenue], [Converted Customers])
+		formatString: \$#,0.00
+		displayFolder: Customer Analysis
+		lineageTag: 4a6c6f0c-50bb-4d4f-95b5-bdc1479385c3
+
+	measure 'Avg Days to Conversion' = AVERAGEX(SUMMARIZE(FILTER(attribution_customer_journeys, attribution_customer_journeys[journey_converted]=1), attribution_customer_journeys[journey_id], "d", MAX(attribution_customer_journeys[days_to_conversion])), [d])
+		formatString: 0.00
+		displayFolder: Time Analysis
+		lineageTag: e0e305dd-441f-455b-b7c3-dec3d1645e5b
+
+	measure 'Median Days to Conversion' = MEDIANX(SUMMARIZE(FILTER(attribution_customer_journeys, attribution_customer_journeys[journey_converted]=1), attribution_customer_journeys[journey_id], "d", MAX(attribution_customer_journeys[days_to_conversion])), [d])
+		formatString: 0.0
+		displayFolder: Time Analysis
+		lineageTag: ac873334-5b1b-4ba1-9170-628c0c5377db
+
+	column touchpoint_id
+		dataType: string
+		lineageTag: 9b13373b-89f0-4f81-8155-e444683158c1
+		summarizeBy: none
+		sourceColumn: touchpoint_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		lineageTag: 0142499a-cd1b-40f8-968b-df092e95ecf3
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column session_id
+		dataType: string
+		lineageTag: 0c03841c-cdd0-4cbb-8d3d-6ebf6b95f010
+		summarizeBy: none
+		sourceColumn: session_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column journey_id
+		dataType: string
+		lineageTag: 702eb54f-d5ad-42a9-a2c1-5044257ccce0
+		summarizeBy: none
+		sourceColumn: journey_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column touchpoint_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: cee4a5fa-0357-4439-a68a-11c8ba9aac8b
+		summarizeBy: none
+		sourceColumn: touchpoint_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column touchpoint_datetime
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d18c2dfd-5f64-4e2a-adc3-4c0492a9e5b3
+		summarizeBy: none
+		sourceColumn: touchpoint_datetime
+
+		annotation SummarizationSetBy = Automatic
+
+	column touchpoint_hour
+		dataType: int64
+		formatString: 0
+		lineageTag: 30dcf469-e31f-4945-94fd-9875d0b7478f
+		summarizeBy: sum
+		sourceColumn: touchpoint_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: string
+		lineageTag: 7a54b6a3-55ce-4268-b64b-5262c7ee8738
+		summarizeBy: none
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column week_number
+		dataType: int64
+		formatString: 0
+		lineageTag: ad1b5e59-7707-482b-abb8-ca2980bc86bb
+		summarizeBy: sum
+		sourceColumn: week_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: c4a9cb7c-85bd-4304-bbe8-c81110bce45d
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: string
+		lineageTag: f3f3c747-ddd1-473b-b2dc-44dd2952159b
+		summarizeBy: none
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: b16c06a9-0b12-4709-913b-30dd85a7a2b5
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		lineageTag: a4912edf-9247-49a9-b355-8759fc673a3b
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel_category
+		dataType: string
+		lineageTag: a1d7431d-480a-45ff-97b9-fb078fffba65
+		summarizeBy: none
+		sourceColumn: channel_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column campaign_name
+		dataType: string
+		lineageTag: b322602b-d778-4019-9101-18f76098f763
+		summarizeBy: none
+		sourceColumn: campaign_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column utm_source
+		dataType: string
+		lineageTag: 13c523c8-973d-424d-b79f-f5215fd6a754
+		summarizeBy: none
+		sourceColumn: utm_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column utm_medium
+		dataType: string
+		lineageTag: 9d8e75fd-4971-47c9-bfb4-11f216b8e571
+		summarizeBy: none
+		sourceColumn: utm_medium
+
+		annotation SummarizationSetBy = Automatic
+
+	column touchpoint_position
+		dataType: int64
+		formatString: 0
+		lineageTag: 463c71b7-ff4d-4f18-aaad-0f591b4df19e
+		summarizeBy: sum
+		sourceColumn: touchpoint_position
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_touchpoints
+		dataType: int64
+		formatString: 0
+		lineageTag: 14183db7-226f-4463-b3a4-e9a7c665eb27
+		summarizeBy: sum
+		sourceColumn: total_touchpoints
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_first_touch
+		dataType: int64
+		formatString: 0
+		lineageTag: e5892d9b-e0ee-4407-8e2f-e412c414b2fc
+		summarizeBy: sum
+		sourceColumn: is_first_touch
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_last_touch
+		dataType: int64
+		formatString: 0
+		lineageTag: 8b5a1da9-2f6e-45b2-a746-124b69f4d3e8
+		summarizeBy: sum
+		sourceColumn: is_last_touch
+
+		annotation SummarizationSetBy = Automatic
+
+	column position_label
+		dataType: string
+		lineageTag: ca676968-0a34-4838-9f2b-e78f8ea7b0f1
+		summarizeBy: none
+		sourceColumn: position_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_since_first_touch
+		dataType: int64
+		formatString: 0
+		lineageTag: bf91d366-c780-4fdb-8ced-0d878e2a5e6e
+		summarizeBy: sum
+		sourceColumn: days_since_first_touch
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_segment
+		dataType: string
+		lineageTag: f73a8786-c811-4c05-bf82-0ab383ba8d69
+		summarizeBy: none
+		sourceColumn: customer_segment
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 10a1d5bb-de19-4b9e-a0fb-5cb4d9176799
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	column device_type
+		dataType: string
+		lineageTag: d486c4b8-11a6-45e4-9bab-cb941568d807
+		summarizeBy: none
+		sourceColumn: device_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column session_duration_sec
+		dataType: int64
+		formatString: 0
+		lineageTag: 865669f6-e3f6-4ec9-ab96-f7f25b881f2b
+		summarizeBy: sum
+		sourceColumn: session_duration_sec
+
+		annotation SummarizationSetBy = Automatic
+
+	column pages_viewed
+		dataType: int64
+		formatString: 0
+		lineageTag: dac1c745-e668-4c0a-9270-d5bf6862b3b2
+		summarizeBy: sum
+		sourceColumn: pages_viewed
+
+		annotation SummarizationSetBy = Automatic
+
+	column bounce_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: b31005dd-7b71-4752-834f-98e92ad366db
+		summarizeBy: sum
+		sourceColumn: bounce_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column touchpoint_cost_usd
+		dataType: double
+		lineageTag: 2c86668a-159b-4c80-adc3-af482df64ef9
+		summarizeBy: sum
+		sourceColumn: touchpoint_cost_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column converted
+		dataType: int64
+		formatString: 0
+		lineageTag: 0e804e98-1688-4171-84d9-0140550a77a4
+		summarizeBy: sum
+		sourceColumn: converted
+
+		annotation SummarizationSetBy = Automatic
+
+	column journey_converted
+		dataType: int64
+		formatString: 0
+		lineageTag: c47d40d0-546d-46f1-8615-21a1b4057735
+		summarizeBy: sum
+		sourceColumn: journey_converted
+
+		annotation SummarizationSetBy = Automatic
+
+	column conversion_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 64cd5511-ae3a-4b8f-947d-617c4df8165d
+		summarizeBy: none
+		sourceColumn: conversion_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column days_to_conversion
+		dataType: int64
+		formatString: 0
+		lineageTag: e2cb6db4-c87c-4055-a741-6cb00ed3f846
+		summarizeBy: sum
+		sourceColumn: days_to_conversion
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_value_usd
+		dataType: double
+		lineageTag: bc2f8281-9dfc-40a2-b4bf-8472bbb1471e
+		summarizeBy: sum
+		sourceColumn: order_value_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column journey_order_value
+		dataType: double
+		lineageTag: f906d000-7408-4fb0-b772-09f8736517f5
+		summarizeBy: sum
+		sourceColumn: journey_order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_duplicate_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: 2834d7f4-7231-4244-a1d2-0a94cb2c47dd
+		summarizeBy: sum
+		sourceColumn: is_duplicate_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	partition attribution_customer_journeys = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "attribution_customer_journeys_clean_v2.csv"),[Delimiter=",", Columns=37, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"touchpoint_id", type text}, {"customer_id", type text}, {"session_id", type text}, {"journey_id", type text}, {"touchpoint_date", type date}, {"touchpoint_datetime", type datetime}, {"touchpoint_hour", Int64.Type}, {"day_of_week", type text}, {"week_number", Int64.Type}, {"month", Int64.Type}, {"quarter", type text}, {"year", Int64.Type}, {"channel", type text}, {"channel_category", type text}, {"campaign_name", type text}, {"utm_source", type text}, {"utm_medium", type text}, {"touchpoint_position", Int64.Type}, {"total_touchpoints", Int64.Type}, {"is_first_touch", Int64.Type}, {"is_last_touch", Int64.Type}, {"position_label", type text}, {"days_since_first_touch", Int64.Type}, {"customer_segment", type text}, {"region", type text}, {"device_type", type text}, {"session_duration_sec", Int64.Type}, {"pages_viewed", Int64.Type}, {"bounce_flag", Int64.Type}, {"touchpoint_cost_usd", type number}, {"converted", Int64.Type}, {"journey_converted", Int64.Type}, {"conversion_date", type date}, {"days_to_conversion", Int64.Type}, {"order_value_usd", type number}, {"journey_order_value", type number}, {"is_duplicate_flag", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -2,6 +2,13 @@
 
 > Phases 1 and 2 were carried out in the local working folder, where the notebook sat at the repository root. In this GitHub repository it lives at `notebook/Attribution_Model_Comparison.ipynb`; it finds the repository root itself, so it runs unchanged. The Power BI work in `POWERBI/` and `reports/*.md` is separate and was not changed.
 
+
+## Power BI project files and README alignment (21 November 2026)
+
+- Added the full Power BI project (`POWERBI/…Report/` and `…SemanticModel/`) so the dashboard opens from the repository. The local cache (`cache.abf`) and local settings are excluded by `POWERBI/.gitignore`.
+- The semantic model now reads its two CSVs through a `DataFolder` parameter instead of a fixed personal path. Set it once under **Transform data → Edit parameters**.
+- README: clarified that the five models (including Position-Based, 3-day half-life) belong to the Power BI pipeline and the notebook uses six (7-day half-life, Shapley, Markov). Updated the reproduce steps, project structure and future enhancements.
+
 ## Phase 2: methodology fixes (21 November 2026)
 
 This phase fixes the analytical problems found in Phase 1. **Results change in this phase.** The notebook runs end to end with no errors, and every attribution model distributes exactly the same total revenue ($229,294).

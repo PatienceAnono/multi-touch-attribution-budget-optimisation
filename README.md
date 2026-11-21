@@ -163,6 +163,8 @@ The cleaning process corrected **18 inconsistent channel-category records**.
 
 # 📈 Attribution Modeling
 
+> **Two model sets in this repository.** The five models below are the ones behind the **Power BI dashboard** (outputs in the flat `data/*.csv` files). The **comparison notebook** (`notebook/Attribution_Model_Comparison.ipynb`) uses a different set of six: Last Click, First Click, Linear, Time Decay (7-day half-life), Shapley and Markov Chain. It has no Position-Based model. Both sets use the same 3,500 journeys, 1,454 conversions and $229,294.41 revenue. See the [notebook section](#-attribution-model-comparison-notebook-v2) and [`notebook/README.md`](notebook/README.md).
+
 Five attribution models were implemented from scratch at the touchpoint level using the validated cleaned dataset.
 
 The models were applied to the **1,454 converted journeys**:
@@ -223,6 +225,8 @@ Time Decay gives greater weight to interactions closer to conversion.
 The project uses a **3-day half-life**, derived from the dataset's observed median conversion window of approximately six days.
 
 This is an explicit analytical assumption, not a fitted causal parameter.
+
+*The comparison notebook uses a 7-day half-life instead, so its Time Decay figures differ slightly from the dashboard's.*
 
 ## 5️⃣ Position-Based Attribution
 
@@ -606,24 +610,33 @@ The report was designed to allow users to move from:
 multi-touch-attribution-budget-optimisation/
 │
 ├── data/
-│   ├── raw/
-│   └── processed/
+│   ├── *.csv                      # Power BI pipeline outputs (dashboard data source)
+│   ├── raw/                       # source journey data used by the notebook
+│   └── processed/                 # notebook outputs (model results, budgets, dollar impact)
 │
 ├── notebook/
-│   └── Attribution_Model_Comparison.ipynb
-│
-├── visuals/
-│   └── dashboard screenshots
+│   ├── Attribution_Model_Comparison.ipynb   # six-model comparison + budget scenarios
+│   └── README.md
 │
 ├── POWERBI/
-│   └── Marketing_Attribution_Dashboard.pbip
+│   ├── Marketing_Attribution_Dashboard.pbip
+│   ├── Marketing_Attribution_Dashboard.Report/
+│   └── Marketing_Attribution_Dashboard.SemanticModel/
+│
+├── visuals/                       # dashboard screenshots + notebook charts (1_ to 5_)
 │
 ├── reports/
+│   ├── Attribution_Model_Stakeholder_Report.docx
 │   ├── DATA_CLEANING_REPORT_v2.md
 │   ├── POWERBI_MODEL_DOCUMENTATION.md
 │   ├── POWERBI_VISUAL_DESIGN_SPEC.md
 │   └── POWERBI_FINAL_QA_REPORT.md
 │
+├── docs/
+│   └── metrics_definitions.md
+│
+├── CHANGELOG.md
+├── requirements.txt
 └── README.md
 ```
 
@@ -692,10 +705,12 @@ Navigate into the project:
 cd multi-touch-attribution-budget-optimisation
 ```
 
+### Comparison notebook
+
 Install the Python dependencies:
 
 ```bash
-pip install pandas numpy matplotlib seaborn jupyter
+pip install -r requirements.txt
 ```
 
 Launch Jupyter:
@@ -704,13 +719,13 @@ Launch Jupyter:
 jupyter notebook
 ```
 
-Open:
+Open `notebook/Attribution_Model_Comparison.ipynb` and run all cells. It reads `data/raw/attribution_customer_journeys.csv` and regenerates everything in `data/processed/` and the `visuals/1_` to `5_` charts. It reproduces the six-model comparison and budget scenarios, not the Power BI pipeline's five models.
 
-```text
-notebook/Attribution_Model_Comparison.ipynb
-```
+### Power BI dashboard
 
-Run the notebook from the beginning to reproduce the analytical workflow.
+1. Open `POWERBI/Marketing_Attribution_Dashboard.pbip` in Power BI Desktop.
+2. Go to **Transform data → Edit parameters** and set **DataFolder** to the full path of this repository's `data` folder, ending in a backslash (for example `C:\Users\you\multi-touch-attribution-budget-optimisation\data\`).
+3. Click **Refresh**. The dashboard reads `attribution_output.csv` and `attribution_customer_journeys_clean_v2.csv` from that folder.
 
 ---
 
@@ -736,7 +751,7 @@ rather than claiming:
 
 ## Time-Decay Is Assumption-Based
 
-The 3-day half-life was derived from the observed conversion window.
+The dashboard's 3-day half-life was derived from the observed conversion window. The comparison notebook uses 7 days.
 
 It is an analytical assumption and has not been fitted using a causal experiment.
 
@@ -850,19 +865,16 @@ It is to help stakeholders understand:
 
 Possible future extensions include:
 
-- Shapley value attribution
-- Markov-chain attribution
+- Shapley value and Markov-chain attribution in the Power BI dashboard (already in the comparison notebook)
 - Incrementality testing
 - Marketing Mix Modeling
-- Budget allocation simulation
-- Scenario analysis
-- Channel saturation modeling
+- Fitting channel response curves from real spend variation (the notebook currently tests assumed diminishing-returns settings)
 - Customer lifetime value integration
 - Automated Power BI refresh
 - Marketing data warehouse integration
 - Campaign-level experimentation
 
-These are intentionally outside the current validated five-model implementation.
+The comparison notebook already adds Shapley and Markov-chain attribution, budget reallocation scenarios and diminishing-returns sensitivity. The remaining items are outside the current scope.
 
 ---
 
