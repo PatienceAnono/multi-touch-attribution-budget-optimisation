@@ -1,0 +1,5 @@
+expression DataFolder = "C:\path\to\multi-touch-attribution-budget-optimisation\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: a33994df-866a-46c2-8c24-739121a96c6d
+
+	annotation PBI_ResultType = Text
+

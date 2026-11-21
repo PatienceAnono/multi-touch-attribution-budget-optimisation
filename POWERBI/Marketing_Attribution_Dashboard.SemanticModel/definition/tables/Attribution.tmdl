@@ -1,0 +1,290 @@
+table Attribution
+	lineageTag: b2b5f68e-23f0-4ac8-9715-749e43c6e43d
+
+	measure 'Total Conversion Revenue' = SUMX(DISTINCT(Attribution[journey_id]), CALCULATE(MAX(Attribution[journey_order_value])))
+		formatString: \$#,0.00
+		displayFolder: Core Business
+		lineageTag: f03129d9-d690-47d7-89e3-24f4037699e3
+
+	measure 'First Touch Revenue' = SUM(Attribution[first_touch_revenue])
+		formatString: \$#,0.00
+		displayFolder: Attribution Models
+		lineageTag: fef0ddf8-2a1d-46f2-9cc3-e09206a7bc3d
+
+	measure 'Last Touch Revenue' = SUM(Attribution[last_touch_revenue])
+		formatString: \$#,0.00
+		displayFolder: Attribution Models
+		lineageTag: 47eb104f-277a-46e0-955e-a9a066111a02
+
+	measure 'Linear Revenue' = SUM(Attribution[linear_revenue])
+		formatString: \$#,0.00
+		displayFolder: Attribution Models
+		lineageTag: 7811f942-9c2c-4ca9-a145-bac01fa52df4
+
+	measure 'Time Decay Revenue' = SUM(Attribution[time_decay_revenue])
+		formatString: \$#,0.00
+		displayFolder: Attribution Models
+		lineageTag: a9ad12fb-ab6f-4bdf-bac6-571d434b7491
+
+	measure 'Position Based Revenue' = SUM(Attribution[position_based_revenue])
+		formatString: \$#,0.00
+		displayFolder: Attribution Models
+		lineageTag: cdefde9d-9cd3-4b53-866b-6647f211461a
+
+	measure 'Max Model Revenue' = MAXX(UNION(ROW("v",[First Touch Revenue]),ROW("v",[Last Touch Revenue]),ROW("v",[Linear Revenue]),ROW("v",[Time Decay Revenue]),ROW("v",[Position Based Revenue])),[v])
+		formatString: \$#,0.00
+		displayFolder: Model Comparison
+		lineageTag: 60a7193f-4bd4-49f8-abe6-84d44ef80a4e
+
+	measure 'Min Model Revenue' = MINX(UNION(ROW("v",[First Touch Revenue]),ROW("v",[Last Touch Revenue]),ROW("v",[Linear Revenue]),ROW("v",[Time Decay Revenue]),ROW("v",[Position Based Revenue])),[v])
+		formatString: \$#,0.00
+		displayFolder: Model Comparison
+		lineageTag: eb35ad5c-76b6-46a8-864c-486684a8c120
+
+	measure 'Model Revenue Spread' = [Max Model Revenue] - [Min Model Revenue]
+		formatString: \$#,0.00
+		displayFolder: Model Comparison
+		lineageTag: f97fd848-74b8-448d-964e-fa1c3f83d6a3
+
+	measure 'ROAS First Touch' = DIVIDE([First Touch Revenue], [Total Marketing Spend])
+		formatString: 0.00
+		displayFolder: Channel Performance
+		lineageTag: bb344f91-541b-45be-8976-a69cc8e38724
+
+	measure 'ROAS Last Touch' = DIVIDE([Last Touch Revenue], [Total Marketing Spend])
+		formatString: 0.00
+		displayFolder: Channel Performance
+		lineageTag: a5f16118-20c1-4537-93e9-13d885380ae1
+
+	measure 'ROAS Linear' = DIVIDE([Linear Revenue], [Total Marketing Spend])
+		formatString: 0.00
+		displayFolder: Channel Performance
+		lineageTag: 172b246f-f12a-4a6c-99c5-80b155c7252f
+
+	measure 'ROAS Time Decay' = DIVIDE([Time Decay Revenue], [Total Marketing Spend])
+		formatString: 0.00
+		displayFolder: Channel Performance
+		lineageTag: 5f7c13ce-7ccc-40fc-b85c-5b5bf9483388
+
+	measure 'ROAS Position Based' = DIVIDE([Position Based Revenue], [Total Marketing Spend])
+		formatString: 0.00
+		displayFolder: Channel Performance
+		lineageTag: dcef6d46-e412-47b1-b5d8-3ef11a2d730c
+
+	measure 'Cost per Conversion First Touch' = DIVIDE([Total Marketing Spend], SUM(Attribution[first_touch_weight]))
+		formatString: \$#,0.00
+		displayFolder: Channel Performance
+		lineageTag: fbe335a4-cb0e-46ac-8cab-d82b161426d3
+
+	measure 'Cost per Conversion Last Touch' = DIVIDE([Total Marketing Spend], SUM(Attribution[last_touch_weight]))
+		formatString: \$#,0.00
+		displayFolder: Channel Performance
+		lineageTag: da4a3e41-96cc-4fb6-a200-1fc67d2d1fd0
+
+	measure 'Cost per Conversion Linear' = DIVIDE([Total Marketing Spend], SUM(Attribution[linear_weight]))
+		formatString: \$#,0.00
+		displayFolder: Channel Performance
+		lineageTag: 54493a20-dd5e-4d5e-acdc-503c69037725
+
+	measure 'Cost per Conversion Time Decay' = DIVIDE([Total Marketing Spend], SUM(Attribution[time_decay_weight]))
+		formatString: \$#,0.00
+		displayFolder: Channel Performance
+		lineageTag: 0c4a405e-b518-442b-aa58-1e5def378abb
+
+	measure 'Cost per Conversion Position Based' = DIVIDE([Total Marketing Spend], SUM(Attribution[position_based_weight]))
+		formatString: \$#,0.00
+		displayFolder: Channel Performance
+		lineageTag: 835a1134-7b73-4e52-9453-3b0c1fc2b4b5
+
+	measure 'QA First Touch Diff' = [First Touch Revenue] - [Total Conversion Revenue]
+		formatString: \$#,0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: b87c61c4-9661-4c08-838f-fc11230a672e
+
+	measure 'QA Last Touch Diff' = [Last Touch Revenue] - [Total Conversion Revenue]
+		formatString: \$#,0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: c2b98b59-5d86-46e7-a112-9c1e3dd51536
+
+	measure 'QA Linear Diff' = [Linear Revenue] - [Total Conversion Revenue]
+		formatString: \$#,0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: 14139f15-7ed3-441b-986f-759c0dc8e228
+
+	measure 'QA Time Decay Diff' = [Time Decay Revenue] - [Total Conversion Revenue]
+		formatString: \$#,0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: 6ab07edf-eafc-4d3a-8419-6a92febc863a
+
+	measure 'QA Position Based Diff' = [Position Based Revenue] - [Total Conversion Revenue]
+		formatString: \$#,0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: 3f552d80-17cc-4435-a4d4-e44783a849eb
+
+	measure 'QA Weight Sum Check First Touch' = SUM(Attribution[first_touch_weight]) - DISTINCTCOUNT(Attribution[journey_id])
+		formatString: 0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: 067a0ebb-10fa-4f9b-af45-36f8c8390fde
+
+	measure 'QA Weight Sum Check Last Touch' = SUM(Attribution[last_touch_weight]) - DISTINCTCOUNT(Attribution[journey_id])
+		formatString: 0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: b751c2ac-37fc-4adf-8a0e-949c952d423a
+
+	measure 'QA Weight Sum Check Linear' = SUM(Attribution[linear_weight]) - DISTINCTCOUNT(Attribution[journey_id])
+		formatString: 0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: 44bdcead-33c9-4ae6-bac3-081418c25d70
+
+	measure 'QA Weight Sum Check Time Decay' = SUM(Attribution[time_decay_weight]) - DISTINCTCOUNT(Attribution[journey_id])
+		formatString: 0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: 67463593-dc53-430b-8f3e-f3cd1cfa1840
+
+	measure 'QA Weight Sum Check Position Based' = SUM(Attribution[position_based_weight]) - DISTINCTCOUNT(Attribution[journey_id])
+		formatString: 0.0000
+		displayFolder: QA and Reconciliation
+		lineageTag: 80ff47ff-6efe-4adc-8f05-79f18785d043
+
+	column journey_id
+		dataType: string
+		lineageTag: da3abb79-2919-44da-bb02-a012c14a33bc
+		sourceColumn: journey_id
+
+	column customer_id
+		dataType: string
+		lineageTag: 0e03239d-5c69-4a0a-bdfa-7f262238e815
+		sourceColumn: customer_id
+
+	column touchpoint_id
+		dataType: string
+		lineageTag: 0c8dc117-e25d-42e8-b3e5-eec1731443b4
+		sourceColumn: touchpoint_id
+
+	column touchpoint_position
+		dataType: int64
+		lineageTag: 67076e59-33e3-47f2-ac5f-006daa50d32c
+		sourceColumn: touchpoint_position
+
+	column total_touchpoints
+		dataType: int64
+		lineageTag: 0d449d46-f8b0-4804-b2e9-7402cdfd8a16
+		sourceColumn: total_touchpoints
+
+	column touchpoint_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 63f2e4ca-1530-41de-ad55-8926584eddf7
+		sourceColumn: touchpoint_date
+
+	column touchpoint_datetime
+		dataType: dateTime
+		lineageTag: 878db5da-5097-4b78-b2ee-948817c8ac87
+		sourceColumn: touchpoint_datetime
+
+	column channel
+		dataType: string
+		lineageTag: d0f6a49d-4c4f-4fca-9b03-25878402c101
+		sourceColumn: channel
+
+	column channel_category
+		dataType: string
+		lineageTag: 85f1229c-a468-4061-8e8a-98ce43184217
+		sourceColumn: channel_category
+
+	column campaign_name
+		dataType: string
+		lineageTag: c8da05a2-8eff-4bea-be86-5552b1005432
+		sourceColumn: campaign_name
+
+	column customer_segment
+		dataType: string
+		lineageTag: acf5267a-591c-4750-baad-6877d8227287
+		sourceColumn: customer_segment
+
+	column region
+		dataType: string
+		lineageTag: 1ee0b584-3501-470e-a69e-e3dc8e0205f7
+		sourceColumn: region
+
+	column device_type
+		dataType: string
+		lineageTag: 735cf986-c75b-4634-93f9-66e13209849c
+		sourceColumn: device_type
+
+	column journey_converted
+		dataType: int64
+		lineageTag: c904fe75-4c89-4dff-9cba-61f90839c423
+		sourceColumn: journey_converted
+
+	column journey_order_value
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00)
+		lineageTag: 57d15870-5fa9-413f-9210-003a0909731f
+		sourceColumn: journey_order_value
+
+	column first_touch_weight
+		dataType: double
+		lineageTag: 9df1bd9e-398a-420a-9b8b-106cd4e4e93a
+		sourceColumn: first_touch_weight
+
+	column first_touch_revenue
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00)
+		lineageTag: 136bae9b-fdfd-4483-8798-6ba649664d30
+		sourceColumn: first_touch_revenue
+
+	column last_touch_weight
+		dataType: double
+		lineageTag: d52ee5c0-5680-4eba-8629-f608979b084f
+		sourceColumn: last_touch_weight
+
+	column last_touch_revenue
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00)
+		lineageTag: 4a44e2dd-4c30-4d8d-8e40-3459110aa290
+		sourceColumn: last_touch_revenue
+
+	column linear_weight
+		dataType: double
+		lineageTag: ae1931ed-ab76-4e80-8459-8882cd80eb3f
+		sourceColumn: linear_weight
+
+	column linear_revenue
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00)
+		lineageTag: 77f4d95c-9424-4ee7-a712-795a52ae7949
+		sourceColumn: linear_revenue
+
+	column time_decay_weight
+		dataType: double
+		lineageTag: 5db98f19-7c9b-43cc-9654-3a9494b60f81
+		sourceColumn: time_decay_weight
+
+	column time_decay_revenue
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00)
+		lineageTag: 82df2af2-cf8e-450d-9de9-69e6f5ae8a2b
+		sourceColumn: time_decay_revenue
+
+	column position_based_weight
+		dataType: double
+		lineageTag: 9ef3460c-63a5-4caa-bf0b-62f8a21caa18
+		sourceColumn: position_based_weight
+
+	column position_based_revenue
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00)
+		lineageTag: 29fe6a57-4e99-45b8-a433-f861e60df1b3
+		sourceColumn: position_based_revenue
+
+	partition Attribution = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "attribution_output.csv"),[Delimiter=",", Columns=25, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"journey_id", type text}, {"customer_id", type text}, {"touchpoint_id", type text}, {"touchpoint_position", Int64.Type}, {"total_touchpoints", Int64.Type}, {"touchpoint_date", type date}, {"touchpoint_datetime", type datetime}, {"channel", type text}, {"channel_category", type text}, {"campaign_name", type text}, {"customer_segment", type text}, {"region", type text}, {"device_type", type text}, {"journey_converted", Int64.Type}, {"journey_order_value", type number}, {"first_touch_weight", type number}, {"first_touch_revenue", type number}, {"last_touch_weight", type number}, {"last_touch_revenue", type number}, {"linear_weight", type number}, {"linear_revenue", type number}, {"time_decay_weight", type number}, {"time_decay_revenue", type number}, {"position_based_weight", type number}, {"position_based_revenue", type number}})
+				in
+				    #"Changed Type"
+

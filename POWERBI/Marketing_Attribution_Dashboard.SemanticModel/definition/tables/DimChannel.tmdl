@@ -1,0 +1,13 @@
+table DimChannel
+	lineageTag: 3b2bf880-028a-4d10-8b83-61347a495cd9
+
+	column channel
+		isKey
+		lineageTag: 1b034622-1eb1-4998-9d63-3b6d302c5388
+		isNameInferred
+		sourceColumn: attribution_customer_journeys[channel]
+
+	partition DimChannel = calculated
+		mode: import
+		source = DISTINCT(attribution_customer_journeys[channel])
+

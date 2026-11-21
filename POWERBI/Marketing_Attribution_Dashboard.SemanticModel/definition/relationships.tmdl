@@ -1,0 +1,21 @@
+relationship attribution_customer_journeys_touchpoint_date_Date_Date
+	fromColumn: attribution_customer_journeys.touchpoint_date
+	toColumn: Date.Date
+
+relationship attribution_customer_journeys_conversion_date_Date_Date
+	isActive: false
+	fromColumn: attribution_customer_journeys.conversion_date
+	toColumn: Date.Date
+
+relationship Attribution_touchpoint_date_Date_Date
+	fromColumn: Attribution.touchpoint_date
+	toColumn: Date.Date
+
+relationship attribution_customer_journeys_channel_DimChannel_channel
+	fromColumn: attribution_customer_journeys.channel
+	toColumn: DimChannel.channel
+
+relationship Attribution_channel_DimChannel_channel
+	fromColumn: Attribution.channel
+	toColumn: DimChannel.channel
+
